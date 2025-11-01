@@ -98,7 +98,7 @@
     </div>
 
     <button id="start-btn">Mulai Tes</button>
-    <footer>Made with ❤️ by [Nama Kamu]</footer>
+    <footer>Made with ❤️ by [Raihan, Aqil]</footer>
   </div>
 
   <script>
