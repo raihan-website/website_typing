@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #text-to-type {
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+        #input-field {
+            width: 100%;
+            height: 100px;
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        #stats {
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Typing Test</h1>
+        <p>Ketik teks di bawah ini secepat dan seakurat mungkin dalam 60 detik.</p>
+        <div id="text-to-type">The quick brown fox jumps over the lazy dog. This is a simple typing test to measure your speed and accuracy. Keep practicing to improve your skills!</div>
+        <textarea id="input-field" placeholder="Mulai mengetik di sini..."></textarea>
+        <div id="stats">
+            <p>Waktu: <span id="time">60</span> detik</p>
+            <p>WPM: <span id="wpm">0</span></p>
+            <p>Akurasi: <span id="accuracy">100%</span></p>
+        </div>
+        <button id="start-btn">Mulai</button>
+        <button id="reset-btn">Reset</button>
+    </div>
+
+    <script>
+        const textToType = document.getElementById('text-to-type').textContent;
+        const inputField = document.getElementById('input-field');
+        const timeDisplay = document.getElementById('time');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        let timeLeft = 60;
+        let timer;
+        let isStarted = false;
+        let startTime;
+        let correctChars = 0;
+        let totalChars = 0;
+
+        startBtn.addEventListener('click', startTest);
+        resetBtn.addEventListener('click', resetTest);
+        inputField.addEventListener('input', updateStats);
+
+        function startTest() {
+            if (!isStarted) {
+                isStarted = true;
+                startTime = Date.now();
+                inputField.focus();
+                timer = setInterval(() => {
+                    timeLeft--;
+                    timeDisplay.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        inputField.disabled = true;
+                        alert('Waktu habis! WPM: ' + wpmDisplay.textContent + ', Akurasi: ' + accuracyDisplay.textContent);
+                    }
+                }, 1000);
+            }
+        }
+
+        function updateStats() {
+            if (!isStarted) return;
+            const input = inputField.value;
+            totalChars = input.length;
+            correctChars = 0;
+            for (let i = 0; i < input.length; i++) {
+                if (input[i] === textToType[i]) {
+                    correctChars++;
+                }
+            }
+            const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 100;
+            accuracyDisplay.textContent = accuracy + '%';
+
+            const timeElapsed = (Date.now() - startTime) / 1000 / 60; // dalam menit
+            const wordsTyped = correctChars / 5; // asumsi 5 karakter per kata
+            const wpm = Math.round(wordsTyped / timeElapsed);
+            wpmDisplay.textContent = wpm || 0;
+        }
+
+        function resetTest() {
+            clearInterval(timer);
+            timeLeft = 60;
+            timeDisplay.textContent = timeLeft;
+            wpmDisplay.textContent = '0';
+            accuracyDisplay.textContent = '100%';
+            inputField.value = '';
+            inputField.disabled = false;
+            isStarted = false;
+            correctChars = 0;
+            totalChars = 0;
+        }
+    </script>
+</body>
+</html>
